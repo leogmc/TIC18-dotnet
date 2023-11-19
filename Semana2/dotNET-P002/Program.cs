@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; // Adicionando o uso de List<T>
+using System.Globalization; // permite o acesso às classes e funcionalidades necessárias para manipulação de datas e culturas.
 
 public class Tarefa {
     private string titulo;
@@ -25,7 +26,7 @@ public class Tarefa {
 }
 public class Program {
 
-      // método para cadastrar uma tarefa
+      //método para cadastrar uma tarefa
     public static void CadastraTarefa(List<Tarefa> tarefas) {
 
         Tarefa tarefa = new Tarefa();
@@ -36,32 +37,42 @@ public class Program {
         Console.WriteLine($"Insira a descrição: ");
         tarefa.Descricao = Console.ReadLine();
         
-        // Solicitando a data de vencimento ao usuário
-        Console.WriteLine($"Insira a data de vencimento: ");
+Console.WriteLine($"Insira a data de vencimento (DD/MM/AAAA): ");
+string dataInput = Console.ReadLine();
 
-        Console.Write("Dia: ");
-        int dia = int.Parse(Console.ReadLine());
+DateTime dataVencimento;
+if (DateTime.TryParseExact(dataInput, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataVencimento))
+{
+    if (dataVencimento >= DateTime.Today)
+    {
+        tarefa.DataVencimento = dataVencimento;
+        tarefas.Add(tarefa); // Adicionando a tarefa à lista
+        Console.WriteLine($"A data de vencimento da tarefa é: {dataVencimento.ToShortDateString()}");
+        Console.WriteLine("Tarefa cadastrada com sucesso!");
+    }
+    else
+    {
+        Console.WriteLine("Data inválida! A data de vencimento deve ser igual ou posterior à data atual.");
+    }
+}
+else
+{
+    Console.WriteLine("Data inválida! Por favor, insira a data no formato DD/MM/AAAA.");
+}
 
-        Console.Write("Mês: ");
-        int mes = int.Parse(Console.ReadLine());
+   
 
-        Console.Write("Ano: ");
-        int ano = int.Parse(Console.ReadLine());
+    }
 
+    public static void ListarTarefas(List<Tarefa> tarefas){
 
-        // Verificando se a data é válida usando o método TryParse
-        DateTime dataVencimento;
-        if (DateTime.TryParse($"{dia}-{mes}-{ano}", out dataVencimento))
+        foreach(var item in tarefas)
         {
-            // Exibindo a data de vencimento
-            Console.WriteLine($"A data de vencimento do produto é: {dataVencimento.ToShortDateString()}");
+            System.Console.WriteLine("Titulo:" + item.Titulo);
+            System.Console.WriteLine("Descrição:" + item.Descricao);
+            System.Console.WriteLine("Data de vencimento:" + item.DataVencimento);
+            System.Console.WriteLine("----------------------------//");
         }
-        else
-        {
-            Console.WriteLine("Data inválida! Por favor, insira uma data válida.");
-        }
-
-            System.Console.WriteLine("Tarefa cadastrada com sucesso!");
 
     }
     public static void Main(string[] args) {
@@ -89,6 +100,9 @@ public class Program {
                 {
                     case 1:
                         CadastraTarefa(tarefas);
+                        break;
+                    case 2:
+                        ListarTarefas(tarefas);
                         break;
                     default:
                         break;
