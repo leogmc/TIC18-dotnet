@@ -67,27 +67,26 @@ public class Program
 
     public static void ListarTarefas(List<Tarefa> tarefas)
     {
+            System.Console.WriteLine("TAREFAS ADICIONADAS (PENDENTES): \n");
+
         foreach (var item in tarefas)
         {
-            System.Console.WriteLine("TAREFAS ADICIONADAS : \n");
             System.Console.WriteLine("Titulo:" + item.Titulo);
             System.Console.WriteLine("Descrição:" + item.Descricao);
             System.Console.WriteLine("Data de vencimento:" + item.DataVencimento);
         }
     }
-
     public static void ListarTarefasConcluidas(List<Tarefa> tarefasConcluidas){
 
-            System.Console.WriteLine("TAREFAS CONCLUIDAS: \n");
+        System.Console.WriteLine("TAREFAS CONCLUIDAS: \n");
 
            foreach (var item in tarefasConcluidas)
         {
             System.Console.WriteLine("Titulo:" + item.Titulo + " [x]");
             System.Console.WriteLine("Descrição:" + item.Descricao);
             System.Console.WriteLine("Data de vencimento:" + item.DataVencimento);
-            System.Console.WriteLine("-----------------------------------------------------");
+            System.Console.WriteLine("--------------------------------");
         }
-
     }
 
     public static int BuscarTarefas(List<Tarefa> tarefas)
@@ -123,7 +122,7 @@ public class Program
     public static void ExcluirTarefa(List<Tarefa> tarefas){
 
         int indice  =  BuscarTarefas(tarefas);
-        // Verifica se o índice está dentro dos limites da lista antes de remover
+            // Verifica se o índice está dentro dos limites da lista antes de remover
             if (indice >= 0 && indice < tarefas.Count)
             {
             tarefas.RemoveAt(indice);
@@ -133,9 +132,20 @@ public class Program
             return;
             }
     }
+    public static void ConcluirTarefa(List<Tarefa> tarefas, List<Tarefa> tarefasConcluidas){
+
+        int indice = BuscarTarefas(tarefas);
+
+         if (indice >= 0 && indice < tarefas.Count){
+           Tarefa tarefaConcluida = tarefas[indice];
+
+           tarefasConcluidas.Add(tarefaConcluida);
+           tarefas.RemoveAt(indice);
+           System.Console.WriteLine("Tarefa concluida, parabens!\n");
+    }
+    }
     public static void Main(string[] args)
     {
-
         //Gerando uma lista que contém tarefas inseridas pelo usuário
         List<Tarefa> tarefasConcluidas = new List<Tarefa>();
         List<Tarefa> tarefas = new List<Tarefa>();
@@ -149,7 +159,7 @@ public class Program
             Console.WriteLine("[1] - Criar uma nova tarefa");
             Console.WriteLine("[2] - Listar tarefas");
             Console.WriteLine("[3] - Excluir tarefa");
-            Console.WriteLine("[4] - Buscar tarefa");
+            Console.WriteLine("[4] - Marcar tarefa como concluída");
             Console.WriteLine("[0] - Sair.");
             Console.WriteLine("\n");
             Console.WriteLine("Escolha uma opção: ");
@@ -163,18 +173,20 @@ public class Program
                     case 1:
                         CadastraTarefa(tarefas);
                         break;
+
                     case 2:
                         ListarTarefas(tarefas);
                         ListarTarefasConcluidas(tarefasConcluidas);
                         break;
+
                     case 3:
                         ExcluirTarefa(tarefas);
                         break;
 
                     case 4:
-                        BuscarTarefas(tarefas);
+                        ConcluirTarefa(tarefas, tarefasConcluidas);
                         break;
-                        
+
                     default:
                         break;
                 }
