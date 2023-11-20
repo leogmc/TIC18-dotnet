@@ -4,17 +4,17 @@ using System.Globalization; // permite o acesso às classes e funcionalidades ne
 
 public class Tarefa
 {
-    private string titulo;
-    private string descricao;
+    private string? titulo;
+    private string? descricao;
     private DateTime dataVencimento;
 
-    public string Titulo
+    public string? Titulo
     {
         get { return titulo; }
         set { titulo = value; }
     }
 
-    public string Descricao
+    public string? Descricao
     {
         get { return descricao; }
         set { descricao = value; }
@@ -52,40 +52,69 @@ public class Program
                 tarefa.DataVencimento = dataVencimento;
                 tarefas.Add(tarefa); // Adicionando a tarefa à lista
                 Console.WriteLine($"A data de vencimento da tarefa é: {dataVencimento.ToShortDateString()}");
-                Console.WriteLine("Tarefa cadastrada com sucesso!");
+                Console.WriteLine("Tarefa cadastrada com sucesso!\n");
             }
             else
             {
-                Console.WriteLine("Data inválida! A data de vencimento deve ser igual ou posterior à data atual.");
+                Console.WriteLine("Data inválida! A data de vencimento deve ser igual ou posterior à data atual.\n");
             }
         }
         else
         {
-            Console.WriteLine("Data inválida! Por favor, insira a data no formato DD/MM/AAAA.");
+            Console.WriteLine("Data inválida! Por favor, insira a data no formato DD/MM/AAAA.\n");
         }
     }
-
     public static void ListarTarefas(List<Tarefa> tarefas)
     {
+        int qtdTarefas = tarefas.Count;
+
+        if (qtdTarefas == 0)
+    {
+        Console.WriteLine("Não há tarefas criadas. \n");
+        return;
+    }
+
+        Tarefa first = tarefas[0];
+        Tarefa last = tarefas[tarefas.Count-1];
+
             System.Console.WriteLine("TAREFAS ADICIONADAS (PENDENTES): \n");
+            System.Console.WriteLine($"Quantidade de tarefas: {qtdTarefas}\n");
+            System.Console.WriteLine($"Tarefa mais antiga: \nTitulo: {first.Titulo} \nDescrição: {first.Descricao} \nData de vencimento: {first.DataVencimento}");
+            System.Console.WriteLine($"Tarefa mais recente: \nTitulo: {last.Titulo} \nDescrição: {last.Descricao} \nData de vencimento: {last.DataVencimento}");
 
         foreach (var item in tarefas)
         {
             System.Console.WriteLine("Titulo:" + item.Titulo);
             System.Console.WriteLine("Descrição:" + item.Descricao);
             System.Console.WriteLine("Data de vencimento:" + item.DataVencimento);
+            System.Console.WriteLine("------------------------\n");
         }
     }
     public static void ListarTarefasConcluidas(List<Tarefa> tarefasConcluidas){
 
-        System.Console.WriteLine("TAREFAS CONCLUIDAS: \n");
+        int qtdTarefasFeitas = tarefasConcluidas.Count;
 
+        if (qtdTarefasFeitas == 0)
+    {
+        Console.WriteLine("Não há tarefas concluídas.\n");
+        return;
+    }
+
+        Tarefa first = tarefasConcluidas[0];
+        Tarefa last = tarefasConcluidas[tarefasConcluidas.Count-1];
+        
+        System.Console.WriteLine("TAREFAS CONCLUIDAS: \n");
+        System.Console.WriteLine($"Quantidade de tarefas feitas: {qtdTarefasFeitas}\n");
+        System.Console.WriteLine($"Tarefa mais antiga: \n {first.Titulo} [x] \n {first.Descricao} \n {first.DataVencimento}");
+        System.Console.WriteLine($"Tarefa mais recente: \n {last.Titulo} \n {last.Descricao} \n {last.DataVencimento}");
+        
            foreach (var item in tarefasConcluidas)
         {
             System.Console.WriteLine("Titulo:" + item.Titulo + " [x]");
             System.Console.WriteLine("Descrição:" + item.Descricao);
             System.Console.WriteLine("Data de vencimento:" + item.DataVencimento);
-            System.Console.WriteLine("--------------------------------");
+            System.Console.WriteLine("------------------------\n");
+
         }
     }
 
@@ -126,9 +155,9 @@ public class Program
             if (indice >= 0 && indice < tarefas.Count)
             {
             tarefas.RemoveAt(indice);
-            System.Console.WriteLine("Tarefa removida com sucesso!");
+            System.Console.WriteLine("Tarefa removida com sucesso!\n");
             } else {
-            System.Console.WriteLine("Erro ao remover: Tarefa não encontrada.");
+            System.Console.WriteLine("Erro ao remover: Tarefa não encontrada.\n");
             return;
             }
     }
@@ -141,7 +170,7 @@ public class Program
 
            tarefasConcluidas.Add(tarefaConcluida);
            tarefas.RemoveAt(indice);
-           System.Console.WriteLine("Tarefa concluida, parabens!\n");
+           System.Console.WriteLine("Tarefa concluida, parabéns!\n");
     }
     }
     public static void Main(string[] args)
