@@ -1,6 +1,6 @@
 ﻿
 public class Program
-{        
+{
     //Criando uma excessão personalizada
     public class ProdutoNaoEncontradoException : Exception
     {
@@ -95,7 +95,7 @@ public class Program
                         System.Console.WriteLine("\n");
                         System.Console.WriteLine($"Produto encontrado: \n Código: {produto.codigo} \n Nome: {produto.nome} \n Quantidade em estoque: {produto.quantidadeEstoque} \n Preço unitário: {produto.precoUnitario} \n");
 
-                                     int opcao;
+                        int opcao;
                         do
                         {
                             Console.WriteLine("------------------ Alteração de estoque --------------------");
@@ -144,15 +144,15 @@ public class Program
                     else
                     {
                         System.Console.WriteLine("O campo não pode estar vazio.");
-                    }   
+                    }
+                }
+                catch (ProdutoNaoEncontradoException ex)
+                {
+                    System.Console.WriteLine(ex.Message);
+                }
             }
-            catch (ProdutoNaoEncontradoException ex)
-            {
-                System.Console.WriteLine(ex.Message);
-            }
-        }       
+        }
     }
-}
     public static void AdicionaProduto(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos, int indice, (string codigo, string? nome, int quantidadeEstoque, double precoUnitario) produto)
     {
         int qtd;
@@ -191,12 +191,12 @@ public class Program
             produtos.Insert(indice, produtoAtualizado);
         }
     }
-    
+
     public static void GeraRelatorios(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos)
     {
 
-     //Lista de produtos com quantidade em estoque abaixo de um determinado limite informado pelo usuário.
-     //List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaQuantidade = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
+        //Lista de produtos com quantidade em estoque abaixo de um determinado limite informado pelo usuário.
+        //List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaQuantidade = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
 
         int opcao;
         do
@@ -218,41 +218,76 @@ public class Program
                 {
                     case 1:
 
-                    int qtd;
-                    Console.WriteLine("Informe uma quantidade para receber uma lista de produtos que tenha essa quantidade (ou menos) no estoque: ");
-                if (!int.TryParse(Console.ReadLine(), out qtd) || qtd < 0)
-                {
-                    Console.WriteLine("Quantidade em estoque inválida. Por favor, insira um valor numérico inteiro maior ou igual a zero.");
-                    return;
-                }
-                else
-                {
-                
-                 var listaQuantidade = produtos.Where(x => x.quantidadeEstoque < qtd).ToList();
+                        int qtd;
+                        Console.WriteLine("Informe uma quantidade para receber uma lista de produtos que tenha o estoque abaixo dessa quantidade: ");
+                        if (!int.TryParse(Console.ReadLine(), out qtd) || qtd < 0)
+                        {
+                            Console.WriteLine("Quantidade em estoque inválida. Por favor, insira um valor numérico inteiro maior ou igual a zero.");
+                            return;
+                        }
+                        else
+                        {
 
-                 if (listaQuantidade.Any())
-                {
-                    Console.WriteLine("Produtos com estoque menor que o limite informado:");
-                    foreach (var produto in listaQuantidade)
-                    {
-                        System.Console.WriteLine("-----------------------");
-                        Console.WriteLine($"Código: {produto.codigo} \n Nome: {produto.nome} \n Estoque: {produto.quantidadeEstoque} \n Preço: {produto.precoUnitario} \n");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Não foram encontrados produtos com estoque menor que o limite informado. \n");
-                }
+                            var listaQuantidade = produtos.Where(x => x.quantidadeEstoque < qtd).ToList();
 
-                 
+                            if (listaQuantidade.Any())
+                            {
+                                Console.WriteLine("Produtos com estoque menor que o limite informado:");
+                                foreach (var produto in listaQuantidade)
+                                {
+                                    System.Console.WriteLine("-----------------------");
+                                    Console.WriteLine($"Código: {produto.codigo} \n Nome: {produto.nome} \n Estoque: {produto.quantidadeEstoque} \n Preço: {produto.precoUnitario} \n");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não foram encontrados produtos com estoque menor que o limite informado. \n");
+                            }
 
-                }
-                        
-
+                        }
                         break;
 
                     case 2:
-                        
+
+                        double min;
+                        double max;
+
+                        Console.WriteLine("Informe um valor mínimo e um valor máximo para receber uma lista de produtos dentro dessa faixa de preço: \n");
+
+                        Console.WriteLine("Informe um valor mínimo: ");
+                        if (!double.TryParse(Console.ReadLine(), out min) || min < 0)
+                        {
+                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero.");
+                            return;
+                        }
+
+                        Console.WriteLine("Informe um valor máximo: ");
+                         if (!double.TryParse(Console.ReadLine(), out max) || max < 0)
+                        {
+                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero.");
+                            return;
+                        }
+
+                        else
+                        {
+                            var listaPreco = produtos.Where(x => x.precoUnitario > min && x.precoUnitario < max ).ToList();
+
+                            if (listaPreco.Any())
+                            {
+                                Console.WriteLine($"Produtos com valores entre {min} e {max}:");
+                                foreach (var produto in listaPreco)
+                                {
+                                    System.Console.WriteLine("-----------------------");
+                                    Console.WriteLine($"Código: {produto.codigo} \n Nome: {produto.nome} \n Estoque: {produto.quantidadeEstoque} \n Preço: {produto.precoUnitario} \n");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não foram encontrados produtos dentro da faixa de valor informada. \n");
+                            }
+
+                        }
+
                         break;
 
                     case 3:
@@ -278,18 +313,9 @@ public class Program
 
     public static void Main(string[] args)
     {
-        
+
         //Lista principal
         List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
-
-       
-
-        //Lista de produtos com valor entre um mínimo e um máximo informados pelo usuário.
-        List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaValores = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
-
-        //Informar o valor total do estoque e o valor total de cada produto de acordo com seu estoque.
-        List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaTotal = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
-        
 
         int opcao;
         do
