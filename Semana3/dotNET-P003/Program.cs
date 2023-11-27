@@ -1,7 +1,6 @@
 ﻿
 public class Program
-{
-        
+{        
     //Criando uma excessão personalizada
     public class ProdutoNaoEncontradoException : Exception
     {
@@ -180,7 +179,7 @@ public class Program
         int qtd;
         System.Console.WriteLine("Insira a quantidade deseja retirar do estoque: ");
 
-        if (!int.TryParse(Console.ReadLine(), out qtd) || qtd > produto.quantidadeEstoque)
+        if (!int.TryParse(Console.ReadLine(), out qtd) || qtd > produto.quantidadeEstoque || qtd < 0)
         {
             Console.WriteLine("Entrada de dados inválida ou a quantidade que deseja retirar é maior do que a quantidade do estoque.");
             return;
@@ -193,10 +192,104 @@ public class Program
         }
     }
     
+    public static void GeraRelatorios(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos)
+    {
+
+     //Lista de produtos com quantidade em estoque abaixo de um determinado limite informado pelo usuário.
+     //List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaQuantidade = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
+
+        int opcao;
+        do
+        {
+            Console.WriteLine("------------------------ Relatórios --------------------------");
+            Console.WriteLine("               Qual relatório deseja receber?                 ");
+            Console.WriteLine("--------------------------------------------------------------");
+            Console.WriteLine("[1] - Produtos com quantidade abaixo do limite determinado");
+            Console.WriteLine("[2] - Produtos entre um valor mínimo e máximo determinado");
+            Console.WriteLine("[3] - Valor total do estoque & valor total de cada produto");
+            Console.WriteLine("[0] - Sair.");
+            Console.WriteLine("\n");
+            Console.WriteLine("Escolha uma opção: ");
+            string opcaoStr = Console.ReadLine();
+
+            if (int.TryParse(opcaoStr, out opcao) && opcao >= 0 && opcao < 4)
+            {
+                switch (opcao)
+                {
+                    case 1:
+
+                    int qtd;
+                    Console.WriteLine("Informe uma quantidade para receber uma lista de produtos que tenha essa quantidade (ou menos) no estoque: ");
+                if (!int.TryParse(Console.ReadLine(), out qtd) || qtd < 0)
+                {
+                    Console.WriteLine("Quantidade em estoque inválida. Por favor, insira um valor numérico inteiro maior ou igual a zero.");
+                    return;
+                }
+                else
+                {
+                
+                 var listaQuantidade = produtos.Where(x => x.quantidadeEstoque < qtd).ToList();
+
+                 if (listaQuantidade.Any())
+                {
+                    Console.WriteLine("Produtos com estoque menor que o limite informado:");
+                    foreach (var produto in listaQuantidade)
+                    {
+                        System.Console.WriteLine("-----------------------");
+                        Console.WriteLine($"Código: {produto.codigo} \n Nome: {produto.nome} \n Estoque: {produto.quantidadeEstoque} \n Preço: {produto.precoUnitario} \n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Não foram encontrados produtos com estoque menor que o limite informado. \n");
+                }
+
+                 
+
+                }
+                        
+
+                        break;
+
+                    case 2:
+                        
+                        break;
+
+                    case 3:
+
+                        break;
+
+                    case 0:
+                        System.Console.WriteLine("Programa finalizado.");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Você digitou uma opção inválida. \n");
+            }
+
+        } while (opcao != 0);
+
+    }
+
     public static void Main(string[] args)
     {
         
+        //Lista principal
         List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
+
+       
+
+        //Lista de produtos com valor entre um mínimo e um máximo informados pelo usuário.
+        List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaValores = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
+
+        //Informar o valor total do estoque e o valor total de cada produto de acordo com seu estoque.
+        List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> listaTotal = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
+        
 
         int opcao;
         do
@@ -219,7 +312,6 @@ public class Program
                 {
                     case 1:
                         CadastraProduto(produtos);
-
                         break;
 
                     case 2:
@@ -227,7 +319,7 @@ public class Program
                         break;
 
                     case 3:
-
+                        GeraRelatorios(produtos);
                         break;
 
                     case 0:
