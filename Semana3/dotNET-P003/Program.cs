@@ -1,6 +1,7 @@
 ﻿
 public class Program
 {
+        
     //Criando uma excessão personalizada
     public class ProdutoNaoEncontradoException : Exception
     {
@@ -56,7 +57,7 @@ public class Program
                 produtos.Add(produto);
 
                 inputValido = true;
-
+                Console.WriteLine("\n");
                 Console.WriteLine("Produto cadastrado com sucesso! \n");
 
                 foreach (var item in produtos)
@@ -72,12 +73,10 @@ public class Program
 
         }
     }
-
     public static void LocalizaProduto(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos)
     {
 
         bool inputValido = false;
-
         while (!inputValido)
         {
             System.Console.WriteLine("Insira o código do produto que você deseja localizar: ");
@@ -93,30 +92,110 @@ public class Program
                     if (produto != default)
                     {
                         inputValido = true;
+                        int indice = produtos.IndexOf(produto);
+                        System.Console.WriteLine("\n");
                         System.Console.WriteLine($"Produto encontrado: \n Código: {produto.codigo} \n Nome: {produto.nome} \n Quantidade em estoque: {produto.quantidadeEstoque} \n Preço unitário: {produto.precoUnitario} \n");
+
+                                     int opcao;
+                        do
+                        {
+                            Console.WriteLine("------------------ Alteração de estoque --------------------");
+                            Console.WriteLine("        O que deseja fazer com o produto encontrado?        ");
+                            Console.WriteLine("------------------------------------------------------------");
+                            Console.WriteLine("[1] - Adicionar estoque do produto");
+                            Console.WriteLine("[2] - Diminuir estoque do produto");
+                            Console.WriteLine("[0] - Não fazer nada (Sair)");
+                            Console.WriteLine("\n");
+                            Console.WriteLine("Escolha uma opção: ");
+                            string opcaoStr = Console.ReadLine();
+
+                            if (int.TryParse(opcaoStr, out opcao) && opcao >= 0 && opcao < 3)
+                            {
+                                switch (opcao)
+                                {
+                                    case 1:
+                                        AdicionaProduto(produtos, indice, produto);
+                                        break;
+
+                                    case 2:
+                                        RemoveProduto(produtos, indice, produto);
+                                        break;
+
+                                    case 0:
+                                        System.Console.WriteLine("\n");
+                                        System.Console.WriteLine("Voltando para o menu principal...");
+                                        System.Console.WriteLine("\n");
+
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Você digitou uma opção inválida. \n");
+                                {
+                                    throw new ProdutoNaoEncontradoException(); // Lança a exceção quando o produto não é encontrado
+                                }
+                            }
+
+                        } while (opcao != 0);
                     }
                     else
                     {
-                    throw new ProdutoNaoEncontradoException(); // Lança a exceção quando o produto não é encontrado
-                    }
-
-
-                }
-                catch (ProdutoNaoEncontradoException ex)
-                {
-                    System.Console.WriteLine(ex.Message);
-                }
+                        System.Console.WriteLine("O campo não pode estar vazio.");
+                    }   
             }
-            else
+            catch (ProdutoNaoEncontradoException ex)
             {
-                System.Console.WriteLine("O campo não pode estar vazio.");
+                System.Console.WriteLine(ex.Message);
             }
-        }
-
+        }       
     }
+}
+    public static void AdicionaProduto(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos, int indice, (string codigo, string? nome, int quantidadeEstoque, double precoUnitario) produto)
+    {
+        int qtd;
+        System.Console.WriteLine("Insira a quantidade de estoque que deseja adicionar: ");
+
+        if (!int.TryParse(Console.ReadLine(), out qtd) || qtd < 0)
+        {
+            Console.WriteLine("Quantidade em estoque inválida. Por favor, insira um valor numérico inteiro maior ou igual a zero.");
+            return;
+        }
+        else
+        {
+            var produtoAtualizado = (produto.codigo, produto.nome, produto.quantidadeEstoque + qtd, produto.precoUnitario);
+            produtos.RemoveAt(indice);
+            produtos.Insert(indice, produtoAtualizado);
+            System.Console.WriteLine("\n");
+            System.Console.WriteLine("Produto adicionado com sucesso!");
+            System.Console.WriteLine("\n");
+
+        }
+    }
+    public static void RemoveProduto(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos, int indice, (string codigo, string? nome, int quantidadeEstoque, double precoUnitario) produto)
+    {
+        int qtd;
+        System.Console.WriteLine("Insira a quantidade deseja retirar do estoque: ");
+
+        if (!int.TryParse(Console.ReadLine(), out qtd) || qtd > produto.quantidadeEstoque)
+        {
+            Console.WriteLine("Entrada de dados inválida ou a quantidade que deseja retirar é maior do que a quantidade do estoque.");
+            return;
+        }
+        else
+        {
+            var produtoAtualizado = (produto.codigo, produto.nome, produto.quantidadeEstoque - qtd, produto.precoUnitario);
+            produtos.RemoveAt(indice);
+            produtos.Insert(indice, produtoAtualizado);
+        }
+    }
+    
     public static void Main(string[] args)
     {
-
+        
         List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos = new List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)>();
 
         int opcao;
@@ -133,7 +212,7 @@ public class Program
             Console.WriteLine("Escolha uma opção: ");
             string opcaoStr = Console.ReadLine();
 
-            if (int.TryParse(opcaoStr, out opcao) && opcao >= 0 && opcao < 5)
+            if (int.TryParse(opcaoStr, out opcao) && opcao >= 0 && opcao < 4)
             {
 
                 switch (opcao)
