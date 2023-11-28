@@ -191,7 +191,6 @@ public class Program
             produtos.Insert(indice, produtoAtualizado);
         }
     }
-
     public static void GeraRelatorios(List<(string codigo, string? nome, int quantidadeEstoque, double precoUnitario)> produtos)
     {
 
@@ -257,14 +256,14 @@ public class Program
                         Console.WriteLine("Informe um valor mínimo: ");
                         if (!double.TryParse(Console.ReadLine(), out min) || min < 0)
                         {
-                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero.");
+                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero. \n");
                             return;
                         }
 
                         Console.WriteLine("Informe um valor máximo: ");
                          if (!double.TryParse(Console.ReadLine(), out max) || max < 0)
                         {
-                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero.");
+                            Console.WriteLine("Preço inválido. Por favor, insira um preço maior que zero. \n");
                             return;
                         }
 
@@ -292,10 +291,34 @@ public class Program
 
                     case 3:
 
+                    double totalEstoque = 0;
+
+                    // Aplicando a função lambda a cada elemento da lista usando o método Select
+                    List<double> totalProduto = produtos.Select(produto => produto.quantidadeEstoque * produto.precoUnitario).ToList();
+
+                    //Imprimindo os produtos da lista + seu valor total
+                    Console.WriteLine("Valor total de cada produto de acordo com seu estoque: ");
+                    for (int i = 0; i < produtos.Count; i++)
+                    {
+                        var produto = produtos[i];
+                        double resultado = totalProduto[i];
+                        totalEstoque += resultado;
+                        
+                        System.Console.WriteLine("-------------------------");
+                        System.Console.WriteLine($"Código: {produto.codigo}");
+                        System.Console.WriteLine($"Produto: {produto.nome}");
+                        System.Console.WriteLine(resultado);
+                    
+                    }
+
+                    string totalEstoqueFormatado = totalEstoque.ToString("0.00");
+
+                    Console.WriteLine($"Valor Total do estoque de produtos: R${totalEstoqueFormatado}");
+                    
                         break;
 
                     case 0:
-                        System.Console.WriteLine("Programa finalizado.");
+                        System.Console.WriteLine("Retornando...\n");
                         break;
 
                     default:
